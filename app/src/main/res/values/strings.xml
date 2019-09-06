@@ -37,6 +37,4 @@
     <string name="contact">通讯录</string>
     <string name="settings">设置</string>
     <string name="logout">退出</string>
-    <string name="add_friend">添加好友</string>
-    <string name="title_activity_add_friend">AddFriendActivity</string>
 </resources>
