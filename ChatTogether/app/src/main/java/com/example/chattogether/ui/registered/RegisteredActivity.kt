@@ -8,6 +8,7 @@ import com.example.chattogether.R
 import com.example.chattogether.bmobapi.BmobUserApi
 import com.example.chattogether.data.User
 import com.example.chattogether.databinding.ActivityRegisteredBinding
+import com.example.chattogether.ui.BaseActivity
 import com.example.chattogether.ui.home.MainActivity
 import com.example.chattogether.util.InjectorUtils
 import com.example.chattogether.util.jump2Activity
@@ -17,18 +18,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 
-class RegisteredActivity : AppCompatActivity() {
+class RegisteredActivity : BaseActivity<ActivityRegisteredBinding>() {
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val binding: ActivityRegisteredBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_registered)
+    override fun initView() {
+        initDatabinding(R.layout.activity_registered)
         val user = User("", "")
-        binding.user =
+        dataBinding.user =
             InjectorUtils.provideUserViewModelFactory(user).create(UserViewModel::class.java)
-        binding.registered = registered(user)
+        dataBinding.registered = registered(user)
     }
+
+
 
     /**
      *

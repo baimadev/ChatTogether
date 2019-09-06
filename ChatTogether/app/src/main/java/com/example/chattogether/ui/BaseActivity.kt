@@ -22,6 +22,10 @@ abstract class BaseActivity<T: ViewDataBinding>: AppCompatActivity() {
         initView()
     }
 
+
+    /**
+     * 使用initDataBinding初始化DataBinding
+     */
     abstract fun initView()
 
     fun  initDatabinding(layoutId:Int){

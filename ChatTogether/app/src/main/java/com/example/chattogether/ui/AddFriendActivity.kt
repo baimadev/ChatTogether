@@ -14,7 +14,6 @@ class AddFriendActivity : BaseActivity<ActivityAddFriendBinding>() {
     override fun initView() {
         initDatabinding(R.layout.activity_add_friend)
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friend)

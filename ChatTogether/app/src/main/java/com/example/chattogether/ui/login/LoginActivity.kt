@@ -14,6 +14,7 @@ import com.example.chattogether.ui.home.MainActivity
 import com.example.chattogether.R
 import com.example.chattogether.bmobapi.BmobUserApi
 import com.example.chattogether.databinding.ActivityLoginBinding
+import com.example.chattogether.ui.BaseActivity
 import com.example.chattogether.ui.registered.RegisteredActivity
 import com.example.chattogether.util.InjectorUtils
 import com.example.chattogether.util.jump2Activity
@@ -22,20 +23,22 @@ import com.example.chattogether.viewmodels.UserViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity :BaseActivity<ActivityLoginBinding>() {
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun initView() {
+        initDatabinding(R.layout.activity_login)
         requestPermission()
-        val binding: ActivityLoginBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_login)
-        binding.registered = toRegisteredActivity()
+        dataBinding.registered = toRegisteredActivity()
         val user = User("", "")
-        binding.user =
+        dataBinding.user =
             InjectorUtils.provideUserViewModelFactory(user).create(UserViewModel::class.java)
-        binding.login = login(user)
+        dataBinding.login = login(user)
     }
+
+
+
 
     /**
      * 登陆
