@@ -20,7 +20,7 @@ import com.example.chattogether.ui.BaseActivity
 import com.example.chattogether.util.jump2Activity
 import com.google.android.material.tabs.TabLayout
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>() {
 
 
     private val tableTitle = arrayOf("尬聊", "通讯录", "设置")
@@ -29,20 +29,20 @@ class MainActivity : BaseActivity() {
         R.drawable.contacts_selector,
         R.drawable.settings_selector
     )
-    lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
     }
 
     override fun initView() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val toolbar: Toolbar = binding.includeMain.toolbar
+        initDatabinding(R.layout.activity_main)
+        dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val toolbar: Toolbar = dataBinding.includeMain.toolbar
         setSupportActionBar(toolbar)
-        val tabLayout = binding.includeMain.includeAppbar.tabLayout
-        val viewPager = binding.includeMain.includeAppbar.viewpager
+        val tabLayout = dataBinding.includeMain.includeAppbar.tabLayout
+        val viewPager = dataBinding.includeMain.includeAppbar.viewpager
         viewPager.adapter = HomeFragmentpagerAdapter(supportFragmentManager)
         tabLayout.setupWithViewPager(viewPager)
         for (i in 0 until 3) {

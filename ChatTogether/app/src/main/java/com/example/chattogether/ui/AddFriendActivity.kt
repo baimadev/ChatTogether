@@ -5,12 +5,14 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.chattogether.R
+import com.example.chattogether.databinding.ActivityAddFriendBinding
 
 import kotlinx.android.synthetic.main.activity_add_friend.*
 
-class AddFriendActivity : BaseActivity() {
-    override fun initView() {
+class AddFriendActivity : BaseActivity<ActivityAddFriendBinding>() {
 
+    override fun initView() {
+        initDatabinding(R.layout.activity_add_friend)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
