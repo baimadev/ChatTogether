@@ -1,16 +1,11 @@
 package com.example.chattogether
 import android.app.Application
-import android.os.Process
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
 import cn.bmob.newim.BmobIM
 import cn.bmob.v3.Bmob
-import com.example.chattogether.util.log
+import com.example.chattogether.bmobapi.Message.MessageHandler
 
 
 class MyApplication : Application() {
-
     companion object {
         lateinit var instance: MyApplication
     }
@@ -22,6 +17,4 @@ class MyApplication : Application() {
         BmobIM.init(this)
         BmobIM.registerDefaultMessageHandler(MessageHandler())
     }
-
-
 }

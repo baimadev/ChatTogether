@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="user"
+            type="com.example.chattogether.viewmodels.UserViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout

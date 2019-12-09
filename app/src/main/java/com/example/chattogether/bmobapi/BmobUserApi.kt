@@ -3,35 +3,35 @@ package com.example.chattogether.bmobapi
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import cn.bmob.newim.BmobIM
 import cn.bmob.v3.BmobUser
 import cn.bmob.v3.exception.BmobException
-import cn.bmob.v3.listener.SaveListener
-import com.example.chattogether.data.User
 import com.example.chattogether.util.log
 import com.example.chattogether.util.toast
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import cn.bmob.v3.listener.FetchUserInfoListener
 import cn.bmob.v3.BmobQuery
-import cn.bmob.v3.listener.FindListener
 import io.reactivex.Single
+import cn.bmob.newim.listener.ConnectListener
+import android.text.TextUtils
+import cn.bmob.newim.bean.BmobIMUserInfo
+import com.example.chattogether.data.User
+import cn.bmob.newim.core.ConnectionStatus
+import cn.bmob.newim.listener.ConnectStatusChangeListener
+import cn.bmob.v3.listener.*
 
 
 object BmobUserApi {
-
 
     /**
      * 登陆rx
      */
     @SuppressLint("CheckResult")
     fun loginByRx(user: User, context: Context): Single<User> {
-
-        return Single.create<User> {
+        return Single.create {
             user.login(object : SaveListener<User>() {
                 override fun done(p0: User?, p1: BmobException?) {
                     if (p1 == null) {
                         it.onSuccess(p0!!)
+                        connect()
                     } else {
                         it.onError(Throwable(p1.errorCode.toString()))
                     }
@@ -39,6 +39,7 @@ object BmobUserApi {
             })
         }
     }
+
 
     /**
      * 注册rx
@@ -51,6 +52,7 @@ object BmobUserApi {
                     if (p1 == null) {
                         it.onSuccess(p0!!)
                     } else {
+                        toast(p1.message!!)
                         it.onError(Throwable(p1.errorCode.toString()))
                     }
                 }
@@ -59,11 +61,56 @@ object BmobUserApi {
     }
 
     /**
+     * 连接
+     */
+    fun connect() {
+        //TODO 连接：3.1、登录成功、注册成功或处于登录状态重新打开应用后执行连接IM服务器的操作
+        val user = getCurrentUser()
+        user?.let {
+            if (!TextUtils.isEmpty(user.objectId)) {
+                BmobIM.connect(user.objectId, object : ConnectListener() {
+                    override fun done(uid: String, e: BmobException?) {
+                        if (e == null) {
+                            //连接成功
+                            updateUserInfo(it)
+                        } else {
+                            //连接失败
+                            toast(e.message!!)
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    /**
+     * 断开连接
+     */
+    fun disConnect() {
+        BmobIM.getInstance().disConnect()
+    }
+
+    /**
+     * 监听连接状态
+     */
+    fun getCurrentStatus() {
+        //TODO 连接：3.3、监听连接状态，可通过BmobIM.getInstance().getCurrentStatus()来获取当前的长连接状态
+        BmobIM.getInstance()
+            .setOnConnectStatusChangeListener(object : ConnectStatusChangeListener() {
+                override fun onChange(status: ConnectionStatus) {
+                    toast(status.msg)
+                    log(BmobIM.getInstance().currentStatus.msg)
+                }
+            })
+    }
+
+    /**
      * 退出登陆
      */
     fun logout() {
         if (isLogin()) {
             log("退出登录")
+            disConnect()
             BmobUser.logOut()
         }
     }
@@ -88,6 +135,39 @@ object BmobUserApi {
         }
     }
 
+    /**
+     * 更新用户表
+     */
+    fun updataUser(user: User): Single<BmobException> {
+        return Single.create<BmobException> {
+            user.update(object : UpdateListener() {
+                override fun done(p0: BmobException?) {
+                    if (p0 != null) {
+                        it.onSuccess(p0)
+                    }
+                }
+            })
+        }
+
+    }
+
+    /**
+     * 更新本地用户表
+     */
+    fun updateUserInfo(user: User) {
+        val userInfo = BmobIMUserInfo()
+        userInfo.userId = user.objectId
+        userInfo.name = user.username
+        userInfo.avatar = " "
+        BmobIM.getInstance().updateUserInfo(userInfo)
+    }
+
+    /**
+     * 获取本地用户表
+     */
+    fun getUserInfo(uid: String): BmobIMUserInfo {
+        return BmobIM.getInstance().getUserInfo(uid)
+    }
 
     /**
      * 同步控制台数据到缓存中
@@ -123,20 +203,38 @@ object BmobUserApi {
     /**
      * 查询用户表
      */
-    private fun queryUser(callback: BmobQueryUserCallback) {
-
-        val bmobQuery = BmobQuery<User>()
-        bmobQuery.findObjects(object : FindListener<User>() {
-            override fun done(p0: MutableList<User>?, p1: BmobException?) {
-                if (p1 == null) {
-                    log("查询成功！")
-                    callback.onSuccess(p0, p1)
-                } else {
-                    log("查询失败！+${p1.message}")
-                    callback.onFailure(p0, p1)
+    fun queryUser2Rx(): Single<MutableList<User>> {
+        return Single.create {
+            val bmobQuery = BmobQuery<User>()
+            bmobQuery.findObjects(object : FindListener<User>() {
+                override fun done(p0: MutableList<User>?, p1: BmobException?) {
+                    if (p1 == null) {
+                        it.onSuccess(p0!!)
+                    } else {
+                        it.onError(p1)
+                    }
                 }
-            }
-        })
+            })
+        }
+    }
+
+    /**
+     * 根据uid查询用户
+     */
+    fun queryUserFromUid(uid: String): Single<User> {
+        return Single.create {
+            val bmobQuery = BmobQuery<User>()
+            bmobQuery.getObject(uid, object : QueryListener<User>() {
+                override fun done(p0: User?, p1: BmobException?) {
+                    if (p0!= null) {
+                        it.onSuccess(p0)
+                    }
+                    if (p1 != null) {
+                        it.onError(p1)
+                    }
+                }
+            })
+        }
     }
 
 

@@ -16,13 +16,14 @@ class SettingsFragment: Fragment() {
 
 
     lateinit var mContext: Context
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if(context!=null){
             mContext=context
         }
-
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

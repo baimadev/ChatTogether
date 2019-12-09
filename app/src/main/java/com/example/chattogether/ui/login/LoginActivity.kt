@@ -9,11 +9,13 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import cn.bmob.newim.BmobIM
 import com.example.chattogether.data.User
 import com.example.chattogether.ui.home.MainActivity
 import com.example.chattogether.R
 import com.example.chattogether.bmobapi.BmobUserApi
 import com.example.chattogether.databinding.ActivityLoginBinding
+import com.example.chattogether.ui.BaseActivity
 import com.example.chattogether.ui.registered.RegisteredActivity
 import com.example.chattogether.util.InjectorUtils
 import com.example.chattogether.util.jump2Activity
@@ -22,14 +24,14 @@ import com.example.chattogether.viewmodels.UserViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class LoginActivity : AppCompatActivity() {
-
+class LoginActivity :BaseActivity<ActivityLoginBinding>(){
+    override fun initView() {
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initBinding(R.layout.activity_login)
         super.onCreate(savedInstanceState)
         requestPermission()
-        val binding: ActivityLoginBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_login)
         binding.registered = toRegisteredActivity()
         val user = User("", "")
         binding.user =
@@ -59,10 +61,7 @@ class LoginActivity : AppCompatActivity() {
                         205 -> toast("没有找到此用户名的用户！")
                     }
                 })
-
-
         }
-
     }
 
     /**
@@ -72,18 +71,15 @@ class LoginActivity : AppCompatActivity() {
         return View.OnClickListener {
             jump2Activity(this, RegisteredActivity::class.java)
         }
-
     }
 
 
     private fun requestPermission() {
-
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.INTERNET
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     Manifest.permission.INTERNET
@@ -125,7 +121,6 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }.show()
     }
-
 
 }
 

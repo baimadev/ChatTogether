@@ -19,12 +19,11 @@ import io.reactivex.schedulers.Schedulers
 
 class RegisteredActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityRegisteredBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_registered)
-        val user = User("", "")
+        val user = User()
         binding.user =
             InjectorUtils.provideUserViewModelFactory(user).create(UserViewModel::class.java)
         binding.registered = registered(user)
@@ -47,6 +46,7 @@ class RegisteredActivity : AppCompatActivity() {
                     jump2Activity(this, MainActivity::class.java)
                     finish()
                 }, {
+                    toast(it.message!!)
                     when (it.message!!.toInt()) {
                         304 -> toast("请输入账号和密码！")
                         202 -> toast("用户名已存在！")

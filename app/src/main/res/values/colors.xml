@@ -3,7 +3,6 @@
     <color name="colorPrimary">#57a99a</color>
     <color name="colorPrimaryDark">#57a99a</color>
     <color name="colorAccent">#57a99a</color>
-    
     <color name="lightGray">#f0f0f0</color>
     <color name="lightGreen">#d1eecc</color>
     <color name="lightBlue">#76dbd1</color>
@@ -12,5 +11,6 @@
     <color name="textColorGray">#979797</color>
     <color name="lightWhite">#ffffff</color>
     <color name="darkWhite">#f8f8f8</color>
+    <color name="transparent_background">#50000000</color>
 
 </resources>

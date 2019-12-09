@@ -37,4 +37,7 @@
     <string name="contact">通讯录</string>
     <string name="settings">设置</string>
     <string name="logout">退出</string>
+    <string name="change_avatar">更换头像</string>
+    <string name="user_name">昵称</string>
+    <string name="request_add_friend">请求添加您为好友！</string>
 </resources>
